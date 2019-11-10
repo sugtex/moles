@@ -7,13 +7,13 @@ import (
 
 const (
 	// 默认协程池大小
-	DEFAULT_MOLES_CAVE_SIZE = 1000000
+	DEFAULT_MOLES_CAVE_SIZE = uint32(1000000)
 
 	// 每个worker的过期时间
 	DEFAULT_EXPIRY_TIME = 10
 
 	// 默认最大阻塞数量
-	DEFAULT_MAX_BLOCKING_TASKS = 10000
+	DEFAULT_MAX_BLOCKING_TASKS = uint32(10000)
 
 	// 关闭状态
 	CLOSED = 1
@@ -84,7 +84,7 @@ func WithNonblocking(nonBlocking bool) Option {
 
 // 提交任务
 func Submit(task func()) error {
-	return defaultMolesCave.Submit(task)
+	return defaultMolesCave.SubmitTask(task)
 }
 
 // 获取当前正在运行的worker数量
