@@ -23,15 +23,14 @@ func (wwf *workerWithFunc) run() {
 		for {
 			arg := <-wwf.args
 			if arg == nil {
-				atomic.AddUint32(&wwf.cave.running, -1)
+				atomic.AddUint32(&wwf.cave.running, ^uint32(-(-1)-1))
 				wwf.cave.cache.Put(wwf)
 				break
 			}
 			wwf.cave.caveFunc(arg)
-			if ok := wwf.cave.recycleWorker(wwf); ok {
+			if ok := wwf.cave.recycleWorker(wwf); !ok {
 				break
 			}
 		}
 	}()
 }
-

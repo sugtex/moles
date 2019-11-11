@@ -1,6 +1,7 @@
 package moles
 
 import (
+	"fmt"
 	"sync/atomic"
 	"time"
 )
@@ -20,15 +21,15 @@ type worker struct {
 func (w *worker) run() {
 	atomic.AddUint32(&w.cave.running, 1)
 	go func() {
-		for {
-			task := <-w.task
+		for task := range w.task {
 			if task == nil {
-				atomic.AddUint32(&w.cave.running, -1)
+				atomic.AddUint32(&w.cave.running, ^uint32(-(-1)-1))
+				fmt.Println("回收到对象池")
 				w.cave.cache.Put(w)
 				break
 			}
 			task()
-			if ok := w.cave.recycleWorker(w); ok {
+			if ok := w.cave.recycleWorker(w); !ok {
 				break
 			}
 		}
